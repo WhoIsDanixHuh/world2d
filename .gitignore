@@ -1,0 +1,11 @@
+.vs
+lib
+x64
+
+imgui.txt
+*.dll
+
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
