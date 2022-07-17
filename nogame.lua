@@ -19,8 +19,6 @@ function world2d.Init()
         {func = ImGui.ShowDemoWindow, title = "Show Demo Window", bool = ImGui.Bool.new(false)},
         {func = ImGui.ShowAboutWindow, title = "Show About Window", bool = ImGui.Bool.new(false)},
         {func = ImGui.ShowMetricsWindow, title = "Show Metrics Window", bool = ImGui.Bool.new(false)},
-        {func = ImGui.ShowStyleSelector, title = "Show Style Selector", bool = ImGui.Bool.new(false)},
-        {func = ImGui.ShowFontSelector, title = "Show Font Selector", bool = ImGui.Bool.new(false)},
         {func = ImGui.ShowUserGuide, title = "Show User Guide", bool = ImGui.Bool.new(false)},
     }
 end
