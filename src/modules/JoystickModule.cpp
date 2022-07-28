@@ -10,7 +10,7 @@ world2d::JoystickModule::~JoystickModule() {
 }
 
 bool world2d::JoystickModule::Initialize() {
-	if (SDL_Init(SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC) != 0) {
+	if (SDL_Init(SDL_INIT_GAMECONTROLLER) != 0) {
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize SDL joystick subsystem: %s", SDL_GetError());
 		return false;
 	}
@@ -95,11 +95,14 @@ void world2d::JoystickModule::OnEvent(SDL_Event& event) {
 
 		case SDL_CONTROLLERDEVICEREMOVED: {
 			SDL_JoystickID deviceId = RemoveJoystick(event.cdevice.which);
-
 			luaWorld2dNamespace.get<sol::function>("OnJoystickRemoved")(deviceId);
 			break;
 		}
 	}
+}
+
+const char* world2d::JoystickModule::GetName() {
+	return "JoystickModule";
 }
 
 world2d::GameController* world2d::JoystickModule::AddJoystick(int deviceIndex) {

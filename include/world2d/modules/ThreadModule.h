@@ -4,20 +4,13 @@
 #include "world2d/Module.h"
 
 namespace world2d {
-	struct Thread {
-		SDL_Thread* sdlThread;
-		const char* name;
-		sol::function luaFunc;
-
-		Thread(sol::function luaFunc, const char* threadName);
-	};
-
 	class ThreadModule : public world2d::Module {
 	public:
 		ThreadModule();
 		ThreadModule(const ThreadModule&) = delete;
 
-		bool Initialize();
+		bool Initialize() override;
+		const char* GetName() override;
 		SDL_ThreadPriority StringToThreadPriority(const char* priorityStr);
 
 		static ThreadModule* Get();

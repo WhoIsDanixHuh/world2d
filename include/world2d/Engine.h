@@ -40,6 +40,7 @@ namespace world2d {
         SDL_Window* GetSDLWindow();
         SDL_Renderer* GetSDLRenderer();
         sol::state& GetLua();
+        double GetDeltaTime();
 
         static Engine* Get();
     };

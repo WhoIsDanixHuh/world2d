@@ -8,12 +8,12 @@ function world2d.Init()
 		for i = 1, 10 do
 			table.insert(numbers, i)
 			print("Pushed number "..i.." to the table")
-
 			world2d.Timer.Delay(1000)
 		end
 	end
 
 	thread = world2d.Threading.Thread.new(threadfunc, "Thread1")
+	thread:Detach()
 end
 
 function world2d.Render()

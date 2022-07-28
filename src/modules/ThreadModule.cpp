@@ -1,12 +1,7 @@
+#include "world2d/lua/structures/Thread.h"
 #include "world2d/modules/ThreadModule.h"
-#include <cstring>
 
-world2d::Thread::Thread(sol::function luaFunc_, const char* name_) : luaFunc(luaFunc_), name(name_) {
-	this->sdlThread = SDL_CreateThread([](void* data) {
-		((world2d::Thread*)data)->luaFunc();
-		return 0;
-	}, name, this);
-}
+#include <cstring>
 
 world2d::ThreadModule::ThreadModule() : world2d::Module() {
 
@@ -26,18 +21,11 @@ bool world2d::ThreadModule::Initialize() {
 
 		"id", sol::property([&](world2d::Thread& self) {
 			return SDL_GetThreadID(self.sdlThread);
-		})
+		}),
+
+		"Wait", &world2d::Thread::Wait,
+		"Deatch", &world2d::Thread::Detach
 	);
-
-	luaThreadNamespace.set_function("Wait", [&](world2d::Thread& thread) {
-		int returnValue;
-		SDL_WaitThread(thread.sdlThread, &returnValue);
-		return returnValue;
-	});
-
-	luaThreadNamespace.set_function("Detach", [&](world2d::Thread& thread) {
-		SDL_DetachThread(thread.sdlThread);
-	});
 
 	luaThreadNamespace.set_function("GetCurrentThreadID", &SDL_ThreadID);
 	luaThreadNamespace.set_function("SetCurrentThreadPriority", [&](const char* priorityStr) {
@@ -50,6 +38,10 @@ bool world2d::ThreadModule::Initialize() {
 
 	luaWorld2dNamespace["Threading"] = luaThreadNamespace;
 	return true;
+}
+
+const char* world2d::ThreadModule::GetName() {
+	return "ThreadModule";
 }
 
 SDL_ThreadPriority world2d::ThreadModule::StringToThreadPriority(const char* priorityStr) {

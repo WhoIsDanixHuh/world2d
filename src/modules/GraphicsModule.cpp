@@ -62,7 +62,22 @@ bool world2d::GraphicsModule::Initialize() {
         "h",
         sol::property([&](world2d::Texture& self) {
             return self.GetHeight();
-        })
+        }),
+
+        "Draw",
+        sol::overload(
+            [&](world2d::Texture& self) {
+                self.Draw();
+            },
+
+            [&](world2d::Texture& self, int x, int y) {
+                self.Draw(x, y);
+            },
+
+            [&](world2d::Texture& self, int x, int y, int w, int h) {
+                self.Draw(x, y, w, h);
+            }
+        )
     );
 
     luaGraphicsNamespace.new_usertype<world2d::Sprite>("Sprite",
@@ -102,13 +117,29 @@ bool world2d::GraphicsModule::Initialize() {
         "h",
         &world2d::Sprite::h,
 
+        "Draw",
+        &world2d::Sprite::Draw,
+
         "IsCollidingWith",
         &world2d::Sprite::IsCollidingWith
     );
 
     luaGraphicsNamespace.new_usertype<world2d::Font>("Font",
         sol::constructors<world2d::Font(const char*, int)>(),
-        "GetTextSize", &world2d::Font::GetTextSize
+
+        "GetTextSize",
+        &world2d::Font::GetTextSize,
+
+        "Draw",
+        sol::overload(
+            [&](world2d::Font& self, const char* text, int x, int y) {
+		        self.Draw(text, x, y);
+            },
+
+            [&](world2d::Font& self, const char* text, int x, int y, int w, int h) {
+                self.Draw(text, x, y, w, h);
+            }
+        )
     );
     // ======================
 
@@ -204,32 +235,6 @@ bool world2d::GraphicsModule::Initialize() {
             }
         }
     });
-
-    luaGraphicsNamespace.set_function("Draw", sol::overload(
-        [&](world2d::Texture& texture) {
-            texture.Draw();
-        },
-
-        [&](world2d::Texture& texture, int x, int y) {
-            texture.Draw(x, y);
-        },
-
-        [&](world2d::Texture& texture, int x, int y, int w, int h) {
-            texture.Draw(x, y, w, h);
-        },
-
-        [&](world2d::Sprite& sprite) {
-            sprite.Draw();
-        },
-
-        [&](world2d::Font& font, const char* text, int x, int y) {
-            font.Draw(text, x, y);
-        },
-
-        [&](world2d::Font& font, const char* text, int x, int y, int w, int h) {
-            font.Draw(text, x, y, w, h);
-        }
-    ));
     // =====================
 
     luaWorld2dNamespace["Graphics"] = luaGraphicsNamespace;
@@ -247,6 +252,10 @@ void world2d::GraphicsModule::Update(double deltaTime) {
 void world2d::GraphicsModule::Render() {
     SDL_SetRenderDrawColor(mEngine->GetSDLRenderer(), 255, 255, 255, 255);
     mEngine->GetLua().get<sol::table>("world2d").get<sol::function>("Render")();
+}
+
+const char* world2d::GraphicsModule::GetName() {
+    return "GraphicsModule";
 }
 
 world2d::GraphicsModule* world2d::GraphicsModule::Get() {

@@ -51,6 +51,10 @@ void world2d::MouseModule::OnEvent(SDL_Event& event) {
     }
 }
 
+const char* world2d::MouseModule::GetName() {
+    return "MouseModule";
+}
+
 const char* world2d::MouseModule::MouseButtonToString(Uint8 buttonType) {
     switch (buttonType) {
         case SDL_BUTTON_LEFT: return "Left";

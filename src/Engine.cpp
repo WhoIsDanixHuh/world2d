@@ -7,11 +7,14 @@
 #include "world2d/modules/KeyboardModule.h"
 #include "world2d/modules/JoystickModule.h"
 #include "world2d/modules/MouseModule.h"
+#include "world2d/modules/AudioModule.h"
+#include "world2d/modules/TweeningModule.h"
 #include "world2d/modules/ClipboardModule.h"
 #include "world2d/modules/ThreadModule.h"
 #include "world2d/modules/TimerModule.h"
 
 #include <iostream>
+#include <cstring>
 
 int engine_exception_handler(lua_State* L, sol::optional<const std::exception&> maybe_exception, sol::string_view description) {
     std::cout << "Error occured: ";
@@ -60,6 +63,8 @@ void world2d::Engine::LoadModules() {
     mModules.push_back(world2d::KeyboardModule::Get());
     mModules.push_back(world2d::JoystickModule::Get());
     mModules.push_back(world2d::MouseModule::Get());
+    mModules.push_back(world2d::AudioModule::Get());
+    mModules.push_back(world2d::TweeningModule::Get());
     mModules.push_back(world2d::ClipboardModule::Get());
     mModules.push_back(world2d::ThreadModule::Get());
     mModules.push_back(world2d::TimerModule::Get());
@@ -92,7 +97,7 @@ bool world2d::Engine::CompileAndRun(const char* filename) {
 
     for (world2d::Module* module : mModules) {
         if (!module->Initialize()) {
-            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize module.");
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to initialize module %s.", module->GetName());
         }
     }
 
@@ -124,7 +129,7 @@ bool world2d::Engine::CompileAndRun(const char* filename) {
                 mIsRunning = false;
             }
 
-            for (Module* module : mModules) {
+            for (world2d::Module* module : mModules) {
                 module->OnEvent(mSDLEvent);
             }
         }
@@ -156,6 +161,10 @@ SDL_Renderer* world2d::Engine::GetSDLRenderer() {
 
 sol::state& world2d::Engine::GetLua() {
     return mLua;
+}
+
+double world2d::Engine::GetDeltaTime() {
+    return mDeltaTime;
 }
 
 world2d::Engine* world2d::Engine::Get() {

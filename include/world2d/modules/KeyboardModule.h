@@ -6,11 +6,14 @@
 namespace world2d {
     class KeyboardModule : public world2d::Module {
     public:
+        const char* name = "KeyboardModule";
+
         KeyboardModule();
         KeyboardModule(const KeyboardModule&) = delete;
 
-        bool Initialize();
-        void OnEvent(SDL_Event& event);
+        bool Initialize() override;
+        void OnEvent(SDL_Event& event) override;
+        const char* GetName();
 
         static KeyboardModule* Get();
     };

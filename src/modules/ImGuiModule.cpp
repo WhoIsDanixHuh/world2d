@@ -603,6 +603,10 @@ void world2d::ImGuiModule::Render() {
     }
 }
 
+const char* world2d::ImGuiModule::GetName() {
+    return "ImGuiModule";
+}
+
 void world2d::ImGuiModule::InitializeImGui() {
     if (mImGuiInitialized) {
         return;

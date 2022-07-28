@@ -15,6 +15,7 @@ namespace world2d {
         void BeforeRun() override;
         void Update(double deltaTime) override;
         void Render() override;
+        const char* GetName() override;
 
         static GraphicsModule* Get();
     };

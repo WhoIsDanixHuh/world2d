@@ -18,6 +18,7 @@ namespace world2d {
         void OnEvent(SDL_Event& event) override;
         void Update(double deltaTime) override;
         void Render() override;
+        const char* GetName() override;
 
         void InitializeImGui();
 

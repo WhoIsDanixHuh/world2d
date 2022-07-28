@@ -19,6 +19,8 @@ namespace world2d {
         virtual void OnEvent(SDL_Event& event);
         virtual void Update(double deltaTime);
         virtual void Render();
+
+        virtual const char* GetName() = 0;
     };
 }
 

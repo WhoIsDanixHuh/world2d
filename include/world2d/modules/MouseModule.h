@@ -11,6 +11,7 @@ namespace world2d {
 
         bool Initialize();
         void OnEvent(SDL_Event& event);
+        const char* GetName() override;
 
         const char* MouseButtonToString(Uint8 buttonType);
         const char* MouseWheelDirectionToString(Uint32 direction);

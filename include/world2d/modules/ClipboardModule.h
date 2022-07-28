@@ -9,7 +9,8 @@ namespace world2d {
         ClipboardModule();
         ClipboardModule(const ClipboardModule&) = delete;
 
-        bool Initialize();
+        bool Initialize() override;
+        const char* GetName() override;
 
         static ClipboardModule* Get();
     };

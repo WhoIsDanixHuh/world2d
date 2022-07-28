@@ -15,6 +15,7 @@
 - [Dear ImGui](https://github.com/ocornut/imgui)
 - [lua](https://github.com/lua/lua)
 - [sol](https://github.com/ThePhD/sol2)
+- [miniaudio](https://github.com/mackron/miniaudio)
 
 # Credits
 - [StrokeThePea](https://github.com/StrokeThePea) (for making thumbnail)

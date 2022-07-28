@@ -8,7 +8,10 @@ namespace world2d {
     public:
         WindowModule();
         WindowModule(const WindowModule&) = delete;
+
         bool Initialize() override;
+        void OnEvent(SDL_Event& event) override;
+        const char* GetName() override;
 
         static WindowModule* Get();
     };

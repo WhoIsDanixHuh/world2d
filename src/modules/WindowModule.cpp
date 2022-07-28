@@ -25,6 +25,30 @@ bool world2d::WindowModule::Initialize() {
     );
     // =================
 
+    // ===== Events =====
+    constexpr int EVENTS_ARRAY_LENGTH = 14;
+    const char* events[EVENTS_ARRAY_LENGTH] = {
+        "OnWindowShown",
+        "OnWindowHidden",
+        "OnWindowExposed",
+        "OnWindowMoved",
+        "OnWindowRezised",
+        "OnWindowSizeChanged",
+        "OnWindowMinimized",
+        "OnWindowMaximized",
+        "OnWindowRestored",
+        "OnWindowMouseEnter",
+        "OnWindowMouseLeave",
+        "OnWindowKeyboardFocusGained",
+        "OnWindowKeyboardFocusLost",
+        "OnWindowClose"
+    };
+
+    for (int i = 0; i < EVENTS_ARRAY_LENGTH; ++i) {
+        luaWorld2dNamespace.set_function(events[i], []() {});
+    }
+    // ==================
+
     // ===== Main functions =====
     luaWindowNamespace.set_function("SetPosition", [&](int x, int y) {
         SDL_SetWindowPosition(mEngine->GetSDLWindow(), x, y);
@@ -44,6 +68,10 @@ bool world2d::WindowModule::Initialize() {
         SDL_SetWindowTitle(mEngine->GetSDLWindow(), title);
     });
 
+    luaWindowNamespace.set_function("GetTitle", [&]() {
+        return SDL_GetWindowTitle(mEngine->GetSDLWindow());
+    });
+
     luaWindowNamespace.set_function("SetResizable", [&](SDL_bool resizable) {
         SDL_SetWindowResizable(mEngine->GetSDLWindow(), resizable);
     });
@@ -54,14 +82,10 @@ bool world2d::WindowModule::Initialize() {
         }
     });
 
-    luaWindowNamespace.set_function("GetTitle", [&]() {
-        if (SDL_GetWindowTitle(mEngine->GetSDLWindow()) != 0) {
+    luaWindowNamespace.set_function("Flash", [&](SDL_FlashOperation operation) {
+        if (SDL_FlashWindow(mEngine->GetSDLWindow(), operation) != 0) {
             luaL_error(lua.lua_state(), SDL_GetError());
         }
-    });
-
-    luaWindowNamespace.set_function("Flash", [&](SDL_FlashOperation operation) {
-        return static_cast<bool>(SDL_FlashWindow(mEngine->GetSDLWindow(), operation));
     });
 
     luaWindowNamespace.set_function("SetVSync", [&](bool vsync) {
@@ -79,6 +103,74 @@ bool world2d::WindowModule::Initialize() {
 
     luaWorld2dNamespace["Window"] = luaWindowNamespace;
     return true;
+}
+
+void world2d::WindowModule::OnEvent(SDL_Event& event) {
+    if (event.type != SDL_WINDOWEVENT) return;
+
+    sol::table luaWorld2dNamespace { mEngine->GetLua().get<sol::table>("world2d") };
+
+    switch (event.window.event) {
+        case SDL_WINDOWEVENT_SHOWN:
+            luaWorld2dNamespace.get<sol::function>("OnWindowShown")();
+            break;
+
+        case SDL_WINDOWEVENT_HIDDEN:
+            luaWorld2dNamespace.get<sol::function>("OnWindowHidden")();
+            break;
+
+        case SDL_WINDOWEVENT_EXPOSED:
+            luaWorld2dNamespace.get<sol::function>("OnWindowExposed")();
+            break;
+
+        case SDL_WINDOWEVENT_MOVED:
+            luaWorld2dNamespace.get<sol::function>("OnWindowMoved")(event.window.data1, event.window.data2);
+            break;
+
+        case SDL_WINDOWEVENT_RESIZED:
+            luaWorld2dNamespace.get<sol::function>("OnWindowResized")(event.window.data1, event.window.data2);
+            break;
+
+        case SDL_WINDOWEVENT_SIZE_CHANGED:
+            luaWorld2dNamespace.get<sol::function>("OnWindowSizeChanged")(event.window.data1, event.window.data2);
+            break;
+
+        case SDL_WINDOWEVENT_MINIMIZED:
+            luaWorld2dNamespace.get<sol::function>("OnWindowMinimized")();
+            break;
+
+        case SDL_WINDOWEVENT_MAXIMIZED:
+            luaWorld2dNamespace.get<sol::function>("OnWindowMaximized")();
+            break;
+
+        case SDL_WINDOWEVENT_RESTORED:
+            luaWorld2dNamespace.get<sol::function>("OnWindowRestored")();
+            break;
+
+        case SDL_WINDOWEVENT_ENTER:
+            luaWorld2dNamespace.get<sol::function>("OnWindowMouseEnter")();
+            break;
+
+        case SDL_WINDOWEVENT_LEAVE:
+            luaWorld2dNamespace.get<sol::function>("OnWindowMouseLeave")();
+            break;
+
+        case SDL_WINDOWEVENT_FOCUS_GAINED:
+            luaWorld2dNamespace.get<sol::function>("OnWindowKeyboardFocusGained")();
+            break;
+
+        case SDL_WINDOWEVENT_FOCUS_LOST:
+            luaWorld2dNamespace.get<sol::function>("OnWindowKeyboardFocusLost")();
+            break;
+
+        case SDL_WINDOWEVENT_CLOSE:
+            luaWorld2dNamespace.get<sol::function>("OnWindowClose")();
+            break;
+    }
+}
+
+const char* world2d::WindowModule::GetName() {
+    return "WindowModule";
 }
 
 world2d::WindowModule* world2d::WindowModule::Get() {

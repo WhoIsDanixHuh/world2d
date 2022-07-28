@@ -26,6 +26,10 @@ bool world2d::ClipboardModule::Initialize() {
     return true;
 }
 
+const char* world2d::ClipboardModule::GetName() {
+    return "ClipboardModule";
+}
+
 world2d::ClipboardModule* world2d::ClipboardModule::Get() {
     static world2d::ClipboardModule currentModule;
     return &currentModule;

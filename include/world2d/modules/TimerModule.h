@@ -10,6 +10,7 @@ namespace world2d {
         TimerModule(const TimerModule&) = delete;
 
         bool Initialize();
+        const char* GetName() override;
 
         static TimerModule* Get();
     };

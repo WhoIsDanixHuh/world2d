@@ -2,7 +2,7 @@
 lib
 x64
 
-imgui.txt
+imgui.ini
 *.dll
 
 *.sln

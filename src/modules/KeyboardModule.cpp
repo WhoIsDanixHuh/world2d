@@ -38,6 +38,10 @@ void world2d::KeyboardModule::OnEvent(SDL_Event& event) {
     }
 }
 
+const char* world2d::KeyboardModule::GetName() {
+    return "KeyboardModule";
+}
+
 world2d::KeyboardModule* world2d::KeyboardModule::Get() {
     static world2d::KeyboardModule currentModule;
     return &currentModule;

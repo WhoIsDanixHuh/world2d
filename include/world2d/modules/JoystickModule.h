@@ -17,6 +17,7 @@ namespace world2d {
 
 		bool Initialize() override;
 		void OnEvent(SDL_Event& event) override;
+		const char* GetName() override;
 
 		world2d::GameController* AddJoystick(int deviceIndex);
 		world2d::GameController* FindJoystick(SDL_JoystickID deviceId);
