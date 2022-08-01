@@ -2,6 +2,13 @@
 lib
 x64
 
+include/*
+!include/world2d
+
+src/*
+!src/*.cpp
+!src/lua
+
 imgui.ini
 *.dll
 
